@@ -1,0 +1,39 @@
+server:
+  port: 8081
+  servlet:
+    context-path: /aurora
+spring:
+  rabbitmq:
+    host: www.auroragames.cn
+    port: 5672
+    username: guest
+    password: guest
+    virtual-host: /
+    # 开启发送确认
+    publisher-confirms: true
+    # 开启发送失败退回
+    publisher-returns: true
+    listener:
+      direct:
+        acknowledge-mode: manual      # 开启ACK
+        retry:
+          enabled: true #消费者端的重试
+      simple:
+        retry:
+          enabled: true #消费者端的重试
+        acknowledge-mode: manual         # 开启ACK
+        concurrency: 10  #消费者的最小数量
+        max-concurrency: 20  #消费者的最大数量
+        prefetch: 5  #在单个请求中处理的消息个数，他应该大于等于事务数量
+        auto-startup: true  #启动时自动启动容器	true
+        default-requeue-rejected: true  #投递失败时是否重新排队
+    template:
+      reply-timeout: 10000 #超时时间
+      retry:
+        enabled: true  #设置为true的时候RabbitTemplate(生产端)能够实现重试
+        initial-interval: 1000  #第一次与第二次发布消息的时间间隔 1000
+        max-attempts: 3 #尝试发布消息的最大数量 3
+        max-interval: 10000  #尝试发布消息的最大时间间隔 10000
+        multiplier: 1.0  #上一次尝试时间间隔的乘数 1.0
+
+
